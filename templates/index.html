@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Данные из таблицы{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            Рейтинг волонтеров проекта "Роза Ветров"
+        </h1>
+
+
+<!--        &lt;!&ndash; Статус и статистика &ndash;&gt;-->
+<!--        {% if data.status == 'success' %}-->
+<!--        <div class="stats">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-6">-->
+<!--                    <strong>Лист:</strong> {{ data.data.metadata.sheetName }}<br>-->
+<!--                    <strong>Всего записей:</strong> {{ data.data.metadata.totalRecords }}<br>-->
+<!--                    <strong>Показано:</strong> {{ data.data.metadata.returnedRecords }}-->
+<!--                </div>-->
+<!--                <div class="col-md-6 text-end">-->
+<!--                    <button class="btn btn-success refresh-btn" onclick="location.reload()">-->
+<!--                        <i class="fas fa-sync-alt"></i> Обновить-->
+<!--                    </button>-->
+<!--                    <a href="/api/data?{{ request.query_string | safe }}" class="btn btn-outline-primary" target="_blank">-->
+<!--                        <i class="fas fa-download"></i> JSON-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        {% endif %}-->
+
+        <!-- Таблица данных -->
+        <div class="table-container">
+            {% if data.status == 'success' and data.data.records %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                {% if data.data.metadata.columns is iterable %}
+                                    {% for column in data.data.metadata.columns %}
+                                        {% if column is string %}
+                                            <th>{{ column }}</th>
+                                        {% elif column.name is defined %}
+                                            <th>{{ column.name }}</th>
+                                        {% else %}
+                                            <th>Column {{ loop.index }}</th>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% elif data.data.headers is defined %}
+                                    {% for header in data.data.headers %}
+                                        <th>{{ header }}</th>
+                                    {% endfor %}
+                                {% else %}
+                                    <!-- Если структура данных другая, создаем заголовки на основе первого элемента -->
+                                    {% if data.data.records[0] %}
+                                        {% for key in data.data.records[0].keys() %}
+                                            <th>{{ key }}</th>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in data.data.records %}
+                            <tr>
+                                {% if data.data.metadata.columns is iterable %}
+                                    {% for column in data.data.metadata.columns %}
+                                        {% if column is string %}
+                                            {% set column_name = column %}
+                                        {% elif column.name is defined %}
+                                            {% set column_name = column.name %}
+                                        {% else %}
+                                            {% set column_name = "column_" ~ loop.index %}
+                                        {% endif %}
+                                        <td>
+                                            {% if record[column_name] is none or record[column_name] == '' %}
+                                                <span class="text-muted">-</span>
+                                            {% else %}
+                                                {{ record[column_name] }}
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                {% else %}
+                                    <!-- Альтернативный способ отображения если columns не определен -->
+                                    {% for value in record.values() %}
+                                        <td>
+                                            {% if value is none or value == '' %}
+                                                <span class="text-muted">-</span>
+                                            {% else %}
+                                                {{ value }}
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% elif data.status == 'success' and not data.data.records %}
+                <div class="loading">
+                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                    <h4>Нет данных для отображения</h4>
+                    <p>В выбранном листе нет данных или они не соответствуют фильтрам</p>
+                </div>
+            {% elif data.status == 'error' %}
+                <div class="error-alert alert alert-danger">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Ошибка</h4>
+                    <p>{{ data.message }}</p>
+                    <button class="btn btn-outline-danger" onclick="location.reload()">
+                        <i class="fas fa-redo"></i> Попробовать снова
+                    </button>
+                </div>
+            {% else %}
+                <div class="loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Загрузка...</span>
+                    </div>
+                    <p class="mt-2">Загрузка данных...</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

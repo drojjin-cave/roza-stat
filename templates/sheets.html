@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Управление листами{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-file-excel"></i> Управление листами
+        </h1>
+
+        <!-- Выбор листа -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-list"></i> Доступные листы</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for sheet in available_sheets %}
+                    <div class="col-md-3 mb-2">
+                        <a href="?sheet={{ sheet }}" 
+                           class="btn btn-outline-primary w-100 {% if sheet == selected_sheet %}active{% endif %}">
+                            {{ sheet }}
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Данные выбранного листа -->
+        {% if data.status == 'success' %}
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            {% if data.data.metadata.columns is iterable %}
+                                {% for column in data.data.metadata.columns %}
+                                    {% if column is string %}
+                                        <th>{{ column }}</th>
+                                    {% elif column.name is defined %}
+                                        <th>{{ column.name }}</th>
+                                    {% else %}
+                                        <th>Column {{ loop.index }}</th>
+                                    {% endif %}
+                                {% endfor %}
+                            {% elif data.data.headers is defined %}
+                                {% for header in data.data.headers %}
+                                    <th>{{ header }}</th>
+                                {% endfor %}
+                            {% else %}
+                                {% if data.data.records and data.data.records[0] %}
+                                    {% for key in data.data.records[0].keys() %}
+                                        <th>{{ key }}</th>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in data.data.records %}
+                        <tr>
+                            {% if data.data.metadata.columns is iterable %}
+                                {% for column in data.data.metadata.columns %}
+                                    {% if column is string %}
+                                        {% set column_name = column %}
+                                    {% elif column.name is defined %}
+                                        {% set column_name = column.name %}
+                                    {% else %}
+                                        {% set column_name = "column_" ~ loop.index %}
+                                    {% endif %}
+                                    <td>
+                                        {% if record[column_name] is none or record[column_name] == '' %}
+                                            <span class="text-muted">-</span>
+                                        {% else %}
+                                            {{ record[column_name] }}
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            {% else %}
+                                {% for value in record.values() %}
+                                    <td>
+                                        {% if value is none or value == '' %}
+                                            <span class="text-muted">-</span>
+                                        {% else %}
+                                            {{ value }}
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% elif data.status == 'error' %}
+        <div class="alert alert-danger">
+            <h4><i class="fas fa-exclamation-triangle"></i> Ошибка загрузки листа "{{ selected_sheet }}"</h4>
+            <p>{{ data.message }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
