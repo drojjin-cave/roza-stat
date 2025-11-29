@@ -1,0 +1,6 @@
+@font-face {
+    font-family: 'MyCustomFont'; /* Любое имя, которое вы хотите использовать */
+    src: url('fonts/myfont.woff2') format('woff2'); /* Укажите правильный путь к файлу */
+    font-weight: normal;
+    font-style: normal;
+}
