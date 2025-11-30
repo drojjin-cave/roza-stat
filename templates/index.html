@@ -10,27 +10,6 @@
         </h1>
 
 
-<!--        &lt;!&ndash; Статус и статистика &ndash;&gt;-->
-<!--        {% if data.status == 'success' %}-->
-<!--        <div class="stats">-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-6">-->
-<!--                    <strong>Лист:</strong> {{ data.data.metadata.sheetName }}<br>-->
-<!--                    <strong>Всего записей:</strong> {{ data.data.metadata.totalRecords }}<br>-->
-<!--                    <strong>Показано:</strong> {{ data.data.metadata.returnedRecords }}-->
-<!--                </div>-->
-<!--                <div class="col-md-6 text-end">-->
-<!--                    <button class="btn btn-success refresh-btn" onclick="location.reload()">-->
-<!--                        <i class="fas fa-sync-alt"></i> Обновить-->
-<!--                    </button>-->
-<!--                    <a href="/api/data?{{ request.query_string | safe }}" class="btn btn-outline-primary" target="_blank">-->
-<!--                        <i class="fas fa-download"></i> JSON-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        {% endif %}-->
-
         <!-- Таблица данных -->
         <div class="table-container">
             {% if data.status == 'success' and data.data.records %}
@@ -98,27 +77,6 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                </div>
-            {% elif data.status == 'success' and not data.data.records %}
-                <div class="loading">
-                    <i class="fas fa-inbox fa-3x mb-3"></i>
-                    <h4>Нет данных для отображения</h4>
-                    <p>В выбранном листе нет данных или они не соответствуют фильтрам</p>
-                </div>
-            {% elif data.status == 'error' %}
-                <div class="error-alert alert alert-danger">
-                    <h4><i class="fas fa-exclamation-triangle"></i> Ошибка</h4>
-                    <p>{{ data.message }}</p>
-                    <button class="btn btn-outline-danger" onclick="location.reload()">
-                        <i class="fas fa-redo"></i> Попробовать снова
-                    </button>
-                </div>
-            {% else %}
-                <div class="loading">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Загрузка...</span>
-                    </div>
-                    <p class="mt-2">Загрузка данных...</p>
                 </div>
             {% endif %}
         </div>
