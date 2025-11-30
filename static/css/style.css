@@ -1,0 +1,46 @@
+@font-face {
+    font-family: 'CustomFont';
+    src: url('../fonts/breamcatcher.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.custom-font {
+    font-family: 'CustomFont', 'Arial', sans-serif;
+}
+
+.text-xs { font-size: 0.75rem; }   /* 12px */
+.text-sm { font-size: 0.875rem; }  /* 14px */
+.text-base { font-size: 1rem; }    /* 16px */
+.text-lg { font-size: 1.125rem; }  /* 18px */
+.text-xl { font-size: 1.25rem; }   /* 20px */
+.text-2xl { font-size: 1.5rem; }   /* 24px */
+.text-3xl { font-size: 1.875rem; } /* 30px */
+.text-4xl { font-size: 2.25rem; }  /* 36px */
+.text-5xl { font-size: 3rem; }     /* 48px */
+
+
+.table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+.loading {
+    text-align: center;
+    padding: 50px;
+    color: #6c757d;
+}
+.error-alert {
+    margin: 20px 0;
+}
+.stats {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.refresh-btn {
+    margin-left: 10px;
+}
